@@ -156,18 +156,58 @@ def get_driver_info():
     return drivers
 
 
-def map_driver_team(df, driver_info):
+def get_complete_driver_info(df, driver_info):
     """get favorite driver"""
-    driver_and_team = df[["driverCode", "constructor"]].drop_duplicates()
-    driver_to_team = dict(
-        zip(driver_and_team["driverCode"], driver_and_team["constructor"])
+    current_drivers = (
+        df[df["race"] == df["race"].max()]
+        .set_index("driverCode")
+        .to_dict(orient="index")
+    )
+    drivers = driver_info.set_index("code").to_dict(orient="index")
+    for key in current_drivers.keys():
+        drivers[key].update(current_drivers[key])
+    return drivers
+
+
+def get_team_to_driver(df):
+    driver_to_team = (
+        df[["driverCode", "constructor"]]
+        .drop_duplicates()
+        .set_index("driverCode")
+        .to_dict(orient="index")
     )
     team_to_driver = dict()
-    for key, value in driver_to_team.items():
+    for key in driver_to_team.keys():
+        value = driver_to_team[key]["constructor"]
         if value in team_to_driver.keys():
             team_to_driver[value].append(key)
         else:
             team_to_driver[value] = [key]
-    driver_info["contructor"] = driver_info["code"].apply(lambda x: driver_to_team[x])
-    driver_team_info = driver_info.set_index("code").to_dict(orient="index")
-    return (team_to_driver, driver_team_info)
+    return team_to_driver
+
+
+def get_profile(drivers):
+    """build driver profile for front-end"""
+    profile_items = [
+        "givenName",
+        "familyName",
+        "dateOfBirth",
+        "nationality",
+        "permanentNumber",
+        "contructor",
+        "points",
+        "positions",
+        "constructo",
+    ]
+    profile = dict()
+    for key1, value1 in drivers.items():
+        profile[key1] = dict()
+        # temp = {"profile": {key2: value2} for key2, value2 in value1.items() if key2 in profile_items }
+        [(key2, value2) for key2, value2 in value1.items() if key2 in profile_items]
+        profile[key1]["profile"] = dict(
+            [(key2, value2) for key2, value2 in value1.items() if key2 in profile_items]
+        )
+        for key2, value2 in value1.items():
+            if key2 not in profile_items:
+                profile[key1][key2] = value2
+    return profile

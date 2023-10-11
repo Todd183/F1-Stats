@@ -8,6 +8,9 @@
     display: flex;
     flex: row nowrap;
   }
+  .flex_fixed_item {
+    flex: 0.5 0 100px;
+  }
   .flex_item_stretch {
     flex: 1 1 150px;
   }
@@ -18,7 +21,7 @@
   .content_wrap {
     width: 100%;
     padding: 20px;
-    height: 300px;
+    height: 250px;
   }
 
   .content_item {
@@ -39,7 +42,19 @@
     margin-right: 10px;
     margin-top: 10px;
     margin-bottom: 10px;
-    background-color: #ddd;
+    background-color: aliceblue;
+    border-radius: 5%;
+  }
+
+  img {
+    border-radius: 50%;
+  }
+
+  .no_border_radius {
+    border-radius: 0%;
+  }
+  li {
+    line-height: 1.8rem;
   }
   .container {
     flex: 1 1 300px;
@@ -47,18 +62,71 @@
     height: 300px;
   }
 </style>
-<h1 align="center">{{user.constructor}}</h1>
-<div>{{team_to_driver[user.constructor][1]|safe}}</div>
+<header>
+  <h1 align="center">
+    {{user.constructor}}
+    <img
+      class="no_border_radius"
+      src="/static/team_logo/{{user.constructor}}.png"
+      width="40px"
+      alt="hahah"
+    />
+  </h1>
+</header>
 <section>
   <div class="content_wrap flex_row_nowrap border1">
-    <div class="flex_item_stretch border1"></div>
+    <div class="flex_fixed_item border1"></div>
     <div class="flex_item_stretch border1 flex_row_nowrap">
-      <div class="image_wrap"></div>
-      <div class="driver_desc_wrap"></div>
+      <div class="image_wrap">
+        <img src={{profiles[favorite_drivers[0]]["pic_url"]}} width="100%"
+        alt="Description of the image">
+      </div>
+      <div class="driver_desc_wrap">
+        <ul>
+          <li>
+            {{profiles[favorite_drivers[0]].profile.givenName}}
+            {{profiles[favorite_drivers[0]].profile.familyName}}
+          </li>
+          <li>{{profiles[favorite_drivers[0]].profile.dateOfBirth}}</li>
+          <li>
+            Nationality: {{profiles[favorite_drivers[0]].profile.nationality}}
+          </li>
+          <li>
+            Driver Number:
+            {{profiles[favorite_drivers[0]].profile.permanentNumber}}
+          </li>
+          <li>Points: {{profiles[favorite_drivers[0]].profile.points}}</li>
+          <li>
+            Positions: {{profiles[favorite_drivers[0]].profile.positions}}
+          </li>
+        </ul>
+      </div>
     </div>
     <div class="flex_item_stretch border1 flex_row_nowrap">
-      <div class="image_wrap"></div>
-      <div class="driver_desc_wrap"></div>
+      <div class="image_wrap">
+        <img src={{profiles[favorite_drivers[1]]["pic_url"]}} width="100%"
+        alt="Description of the image">
+      </div>
+      <div class="driver_desc_wrap">
+        <ul>
+          <li>
+            {{profiles[favorite_drivers[1]].profile.givenName}}
+            {{profiles[favorite_drivers[1]].profile.familyName}}
+          </li>
+          <li>{{profiles[favorite_drivers[1]].profile.dateOfBirth}}</li>
+          <li>
+            Nationality: {{profiles[favorite_drivers[1]].profile.nationality}}
+          </li>
+          <li>
+            Driver Number:
+            {{profiles[favorite_drivers[1]].profile.permanentNumber}}
+          </li>
+          <li>Points: {{profiles[favorite_drivers[1]].profile.points}}</li>
+          <li>
+            Positions: {{profiles[favorite_drivers[1]].profile.positions}}
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </section>
@@ -68,6 +136,7 @@
 </div>
 
 <script>
+
   var positionChartDom = document.getElementById("f1_chart_position");
   var positionChart = echarts.init(positionChartDom);
 

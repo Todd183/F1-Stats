@@ -4,7 +4,12 @@ from .models import Note, Transaction, User
 from website import db
 import json
 from PIL import Image
-from .get_F1_data import getPlotData, map_driver_team
+from .get_F1_data import (
+    getPlotData,
+    get_complete_driver_info,
+    get_team_to_driver,
+    get_profile,
+)
 
 # import pytesseract
 # import re
@@ -19,11 +24,15 @@ def home():
     df_sql_query = "SELECT * FROM current_data_F1"
     df = pd.read_sql_query(df_sql_query, db.engine)
     plotdata = getPlotData(df)
+    team_to_driver = get_team_to_driver(df)
 
     driver_sql_query = "SELECT * FROM driver_info_F1"
     driver_info = pd.read_sql_query(driver_sql_query, db.engine)
 
-    team_to_driver, driver_team_info = map_driver_team(df, driver_info)
+    drivers = get_complete_driver_info(df, driver_info)
+    profiles = get_profile(drivers)
+
+    favorite_drivers = team_to_driver[current_user.constructor]
 
     xAxisData_new = [x[0] for x in df[["race"]].drop_duplicates().values]
     points = list(df["points"])
@@ -34,14 +43,16 @@ def home():
         index=["race"], columns="driverCode", values="positions"
     ).to_json()
     points = df.pivot(index=["race"], columns="driverCode", values="points").to_json()
-    drivers = list(set(df["driverCode"].tolist()))
+    # drivers = list(set(df["driverCode"].tolist()))
 
     return render_template(
         "home.html",
         user=current_user,
         plotdata=plotdata,
         team_to_driver=team_to_driver,
-        driver_team_info=driver_team_info
+        drivers=drivers,
+        favorite_drivers=favorite_drivers,
+        profiles=profiles
         # positions=positions,
         # points=points,
         # df=df_json,
