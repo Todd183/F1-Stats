@@ -1,0 +1,62 @@
+{% extends 'base.html' %} {% block title %}Sign Up{% endblock %} {% block
+content %}
+<form method="POST">
+  <h3 align="center">Sign Up</h3>
+  <div class="form-group">
+    <lable for="email">Email Address</lable>
+    <input
+      type="email"
+      class="form-control"
+      id="email"
+      name="email"
+      placeholder="Enter email"
+    />
+  </div>
+  <div class="form-group">
+    <lable for="usr_name">User Name</lable>
+    <input
+      type="text"
+      class="form-control"
+      id="usr_name"
+      name="usr_name"
+      placeholder="Enter user name"
+    />
+  </div>
+  <div class="form-group">
+    <lable for="password1">Password</lable>
+    <input
+      type="password"
+      class="form-control"
+      id="password1"
+      name="password1"
+      placeholder="Enter password"
+    />
+  </div>
+  <div class="form-group">
+    <lable for="password2">Password (Confirm)</lable>
+    <input
+      type="password"
+      class="form-control"
+      id="password2"
+      name="password2"
+      placeholder="Confirm password"
+    />
+  </div>
+  <label for="constructor">Favorite Construtor:</label>
+  <select name="constructor">
+    <option value="Red Bull">Red Bull</option>
+    <option value="Aston Martin">Aston Martin</option>
+    <option value="Ferrari">Ferrari</option>
+    <option value="Mercedes">Mercedes</option>
+    <option value="Alfa Romeo">Alfa Romeo</option>
+    <option value="Alpine F1 Team">Alpine F1 Team</option>
+    <option value="Williams">Williams</option>
+    <option value="AlphaTauri">AlphaTauri</option>
+    <option value="Haas F1 Team">Haas F1 Team</option>
+    <option value="McLaren">McLaren</option>
+  </select>
+
+  <br />
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endblock %}
