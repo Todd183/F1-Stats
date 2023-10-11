@@ -5,9 +5,26 @@ import datetime
 import re
 import requests
 import json
+import pytz
 
 YEAR = datetime.datetime.now().year
 y = yukinator.Yuki()
+
+
+def get_races():
+    """get races for current seasons"""
+    races = pd.DataFrame([race.to_flat_dict() for race in y.get_races(year=YEAR)])
+    races["datetime"] = pd.to_datetime(
+        races["date"].astype(str) + " " + races["time"].astype(str)
+    )
+    new_zealand_timezone = pytz.timezone("Pacific/Auckland")
+    races["datetime"] = races["datetime"].dt.tz_convert(new_zealand_timezone)
+    races["nz_date"] = races["datetime"].dt.date
+    races["nz_time"] = races["datetime"].dt.time
+    races["nz_time"] = pd.to_datetime(races["nz_time"], format="%H:%M:%S").dt.strftime(
+        "%I:%M %p"
+    )
+    return races
 
 
 def get_schedule():
@@ -243,17 +260,21 @@ def get_profile(drivers):
     return profile
 
 
-def check_uptodate(df, db):
+def is_uptodate(df, races):
     """check uptodate"""
-    schedule = get_schedule()
+    # schedule = get_schedule()
     current_date = pd.to_datetime(datetime.datetime.now().date())
-    # races = sum((schedule["Date"] < current_date).to_list())
-    races = 20
+    num_of_races = sum((pd.to_datetime(races["nz_date"]) < current_date).to_list())
+    return df["race"].max() + 1 >= num_of_races
 
-    # check whether data is up-to-date
-    if df["race"].max() + 1 < races:
-        current_race, df = getdata()
-        df.to_sql(
-            name="current_data_F1", con=db.engine, index=False, if_exists="replace"
-        )
-        db.session.commit()
+
+def get_next_race(races):
+    """get next races"""
+    current_date = pd.to_datetime(datetime.datetime.now().date())
+    races_not_completed = (pd.to_datetime(races["nz_date"]) > current_date).to_list()
+    is_season_finished = sum(races_not_completed) == 0
+    if not is_season_finished:
+        next_race = races[races_not_completed].iloc[[0]].to_dict(orient="records")
+    else:
+        next_race = "Current Season finished!"
+    return (is_season_finished, next_race)

@@ -4,18 +4,27 @@
   * {
     box-sizing: border-box;
   }
+
+  .background_styles {
+    background-color: #f3ebd0;
+    border-radius: 10px;
+  }
+
   .flex_row_nowrap {
     display: flex;
     flex: row nowrap;
   }
   .flex_fixed_item {
     flex: 0.5 0 100px;
+    background-color: #c4d7b5;
   }
   .flex_item_stretch {
     flex: 1 1 150px;
   }
   .border1 {
-    border: 1px solid;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    background-color: rgba(44, 46, 35, 0.3);
   }
 
   .content_wrap {
@@ -33,7 +42,7 @@
     height: 100px;
     border-radius: 50%;
     background-color: #ccc;
-    margin-top: 40px;
+    margin-top: 20px;
     margin-left: 20px;
     margin-right: 20px;
   }
@@ -42,24 +51,42 @@
     margin-right: 10px;
     margin-top: 10px;
     margin-bottom: 10px;
-    background-color: aliceblue;
+    background-color: white;
     border-radius: 5%;
   }
 
   img {
-    border-radius: 50%;
+    border-radius: 5%;
   }
 
   .no_border_radius {
     border-radius: 0%;
   }
+
+  ul {
+    padding: 0;
+  }
   li {
     line-height: 1.8rem;
+    list-style-type: none;
+    padding-left: 20px;
   }
   .container {
     flex: 1 1 300px;
     margin-top: 30px;
     height: 300px;
+  }
+  .memo_wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 10px;
+  }
+  .no_padding > li {
+    padding: 0;
+  }
+  .margin_left {
+    margin-left: 15px;
   }
 </style>
 <header>
@@ -75,8 +102,19 @@
 </header>
 <section>
   <div class="content_wrap flex_row_nowrap border1">
-    <div class="flex_fixed_item border1"></div>
-    <div class="flex_item_stretch border1 flex_row_nowrap">
+    <div class="flex_fixed_item background_styles memo_wrap">
+      <div class="display_inline_block">
+        <h5 align="center">Next Race</h5>
+        <ul class="no_padding">
+          <li>{{next_race[0].raceName|safe}}</li>
+          <li>{{next_race[0].nz_date|safe}}</li>
+          <li>{{next_race[0].nz_time|safe}}</li>
+        </ul>
+      </div>
+    </div>
+    <div
+      class="flex_item_stretch margin_left background_styles flex_row_nowrap"
+    >
       <div class="image_wrap">
         <img src={{profiles[favorite_drivers[0]]["pic_url"]}} width="100%"
         alt="Description of the image">
@@ -87,22 +125,32 @@
             {{profiles[favorite_drivers[0]].profile.givenName}}
             {{profiles[favorite_drivers[0]].profile.familyName}}
           </li>
-          <li>{{profiles[favorite_drivers[0]].profile.dateOfBirth}}</li>
           <li>
-            Nationality: {{profiles[favorite_drivers[0]].profile.nationality}}
+            <strong>D.O.B:</strong>
+            {{profiles[favorite_drivers[0]].profile.dateOfBirth}}
           </li>
           <li>
-            Driver Number:
+            <strong>Nationality:</strong>
+            {{profiles[favorite_drivers[0]].profile.nationality}}
+          </li>
+          <li>
+            <strong>Driver Number:</strong>
             {{profiles[favorite_drivers[0]].profile.permanentNumber}}
           </li>
-          <li>Points: {{profiles[favorite_drivers[0]].profile.points}}</li>
           <li>
-            Positions: {{profiles[favorite_drivers[0]].profile.positions}}
+            <strong>Points:</strong>
+            {{profiles[favorite_drivers[0]].profile.points}}
+          </li>
+          <li>
+            <strong>Positions:</strong>
+            {{profiles[favorite_drivers[0]].profile.positions}}
           </li>
         </ul>
       </div>
     </div>
-    <div class="flex_item_stretch border1 flex_row_nowrap">
+    <div
+      class="flex_item_stretch margin_left background_styles flex_row_nowrap"
+    >
       <div class="image_wrap">
         <img src={{profiles[favorite_drivers[1]]["pic_url"]}} width="100%"
         alt="Description of the image">
@@ -113,17 +161,25 @@
             {{profiles[favorite_drivers[1]].profile.givenName}}
             {{profiles[favorite_drivers[1]].profile.familyName}}
           </li>
-          <li>{{profiles[favorite_drivers[1]].profile.dateOfBirth}}</li>
           <li>
-            Nationality: {{profiles[favorite_drivers[1]].profile.nationality}}
+            <strong>D.O.B:</strong>
+            {{profiles[favorite_drivers[1]].profile.dateOfBirth}}
           </li>
           <li>
-            Driver Number:
+            <strong>Nationality:</strong>
+            {{profiles[favorite_drivers[1]].profile.nationality}}
+          </li>
+          <li>
+            <strong>Driver Number:</strong>
             {{profiles[favorite_drivers[1]].profile.permanentNumber}}
           </li>
-          <li>Points: {{profiles[favorite_drivers[1]].profile.points}}</li>
           <li>
-            Positions: {{profiles[favorite_drivers[1]].profile.positions}}
+            <strong>Points:</strong>
+            {{profiles[favorite_drivers[1]].profile.points}}
+          </li>
+          <li>
+            <strong>Positions:</strong>
+            {{profiles[favorite_drivers[1]].profile.positions}}
           </li>
         </ul>
       </div>

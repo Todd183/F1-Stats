@@ -1,0 +1,128 @@
+{% extends 'base.html' %} {% block title %}Positions{% endblock %} {% block
+content %}
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  .container {
+    height: 600px;
+  }
+</style>
+<header>
+  <h1 align="center">
+    Cumulative Positions of all drivers in
+    <strong>Season {{current_year|safe}}</strong>
+  </h1>
+</header>
+
+<div class="flex_row_nowrap">
+  <div id="f1_chart_position" class="container"></div>
+</div>
+
+<script>
+
+  var positionChartDom = document.getElementById("f1_chart_position");
+  var positionChart = echarts.init(positionChartDom);
+
+
+  const myRawData = {{plotdata|safe}};
+
+  function drawPositionChart(_rawData) {
+    let option;
+    const players = {{drivers|safe}};
+    const datasetWithFilters = [];
+    const seriesList = [];
+    const legendList = [];
+    echarts.util.each(players, function (player) {
+      var datasetId = "dataset_" + player;
+      datasetWithFilters.push({
+        id: datasetId,
+        fromDatasetId: "dataset_raw",
+        transform: {
+          type: "filter",
+          config: { dimension: "driverCode", "=": player },
+        },
+      });
+      legendList.push({
+        name: player,
+      });
+
+      seriesList.push({
+        type: "line",
+        datasetId: datasetId,
+        showSymbol: false,
+        name: player,
+        endLabel: {
+          show: true,
+          formatter: function (params) {
+            return params.value[1] + ": " + params.value[3];
+          },
+        },
+        labelLayout: {
+          moveOverlap: "shiftY",
+        },
+        emphasis: {
+          focus: "series",
+        },
+        encode: {
+          x: "race",
+          y: "positions",
+          tooltip: ["positions"],
+        },
+      });
+    });
+    option = {
+      animationDuration: 10000,
+      dataset: [
+        {
+          id: "dataset_raw",
+          source: myRawData,
+        },
+        ...datasetWithFilters,
+      ],
+      title: {
+       //text: "F1 postions for all drivers in Season {{current_year|safe}}",
+        left: "center",
+      },
+      tooltip: {
+        order: "valueAsc",
+        trigger: "axis",
+        position: function (point, params, dom, rect, size) {
+          // fixed at top
+          return [point[0] + 30, "10%"];
+        },
+      },
+      xAxis: {
+        type: "category",
+        nameLocation: "middle",
+        name: "Race",
+        nameLocation: "center",
+        nameGap: 30,
+      },
+      yAxis: {
+        inverse: true,
+        type: "category",
+        name: "Position",
+        nameLocation: "center",
+        nameGap: 30,
+        data: Array(23)
+          .fill(0)
+          .map((item, idx) => idx),
+        axisTick: {
+          alignWithLabel: true,
+        },
+      },
+      grid: {
+        right: 140,
+      },
+      series: seriesList,
+    };
+    positionChart.setOption(option);
+  }
+
+  setTimeout(function () {
+    drawPositionChart(myRawData);
+  }, 10);
+</script>
+{% endblock %}

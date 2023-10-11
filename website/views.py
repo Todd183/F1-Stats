@@ -9,7 +9,8 @@ from .get_F1_data import (
     get_complete_driver_info,
     get_team_to_driver,
     get_profile,
-    check_uptodate,
+    is_uptodate,
+    get_next_race,
 )
 
 import datetime
@@ -22,22 +23,21 @@ views = Blueprint("views", __name__)
 @views.route("/", methods=["GET", "POST"])
 @login_required
 def home():
-    df_sql_query = "SELECT * FROM current_data_F1"
+    df_sql_query = "SELECT * FROM current_results_F1"
     df = pd.read_sql_query(df_sql_query, db.engine)
 
+    races_sql_query = "SELECT * FROM current_races_F1"
+    races = pd.read_sql_query(races_sql_query, db.engine)
+
     # # check whether data is up-to-date
-    check_uptodate(df, db)
-    # schedule = get_schedule()
-    # current_date = pd.to_datetime(datetime.datetime.now().date())
-    # races = sum((schedule["Date"] < current_date).to_list())
+    if not is_uptodate(df, races):
+        current_race, df = getdata()
+        df.to_sql(
+            name="current_data_F1", con=db.engine, index=False, if_exists="replace"
+        )
+        db.session.commit()
 
-    # if df["race"].max() + 1 < races:
-    #     current_race, df = getdata()
-    #     df.to_sql(
-    #         name="current_data_F1", con=db.engine, index=False, if_exists="replace"
-    #     )
-    #     db.session.commit()
-
+    is_season_finished, next_race = get_next_race(races)
     plotdata = getPlotData(df)
     team_to_driver = get_team_to_driver(df)
 
@@ -49,17 +49,6 @@ def home():
 
     favorite_drivers = team_to_driver[current_user.constructor]
 
-    xAxisData_new = [x[0] for x in df[["race"]].drop_duplicates().values]
-    points = list(df["points"])
-    positions = list(df["positions"])
-    df_json = df.to_json()
-    driver_and_team = df[["driverCode", "constructor"]].drop_duplicates()
-    positions = df.pivot(
-        index=["race"], columns="driverCode", values="positions"
-    ).to_json()
-    points = df.pivot(index=["race"], columns="driverCode", values="points").to_json()
-    # drivers = list(set(df["driverCode"].tolist()))
-
     return render_template(
         "home.html",
         user=current_user,
@@ -67,14 +56,9 @@ def home():
         team_to_driver=team_to_driver,
         drivers=drivers,
         favorite_drivers=favorite_drivers,
-        profiles=profiles
-        # positions=positions,
-        # points=points,
-        # df=df_json,
-        # driver_and_team=driver_and_team,
-        # xAxisData_new=xAxisData_new,
-        # drivers=drivers,
-        # driver_info=driver_info,
+        profiles=profiles,
+        is_season_finished=is_season_finished,
+        next_race=next_race,
     )
 
 
@@ -108,33 +92,19 @@ def home():
 #     return render_template("scan_receipt.html", user=current_user)
 
 
-@views.route("/note", methods=["GET", "POST"])
+@views.route("/positions", methods=["GET", "POST"])
 @login_required
-def note():
-    if request.method == "POST":
-        note = request.form.get("note")
+def positions():
+    df_sql_query = "SELECT * FROM current_results_F1"
+    df = pd.read_sql_query(df_sql_query, db.engine)
+    current_year = datetime.datetime.now().date().year
 
-        if len(note) < 1:
-            flash("Note is too short", category="error")
-        else:
-            new_note = Note(data=note, user_id=current_user.id)
-            db.session.add(new_note)
-            db.session.commit()
-            flash("Note added", category="success")
-
-    return render_template("note.html", user=current_user)
-
-
-@views.route("/delete-note", methods=["POST"])
-def delete_note():
-    note = json.loads(
-        request.data
-    )  # this function expects a JSON from the INDEX.js file
-    noteId = note["noteId"]
-    note = Note.query.get(noteId)
-    if note:
-        if note.user_id == current_user.id:
-            db.session.delete(note)
-            db.session.commit()
-
-    return jsonify({})
+    plotdata = getPlotData(df)
+    drivers = list(set([i[1] for i in plotdata[1:]]))
+    return render_template(
+        "positions.html",
+        user=current_user,
+        plotdata=plotdata,
+        current_year=current_year,
+        drivers=drivers,
+    )

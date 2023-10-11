@@ -3,7 +3,7 @@ from .models import User
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import db
 from flask_login import login_user, login_required, logout_user, current_user
-from .get_F1_data import getdata, get_driver_info
+from .get_F1_data import getdata, get_driver_info, get_races
 
 
 auth = Blueprint("auth", __name__)
@@ -61,6 +61,7 @@ def sign_up():
 
             current_race, df = getdata()
             driver_info = get_driver_info()
+            races = get_races()
 
             new_user = User(
                 email=email,
@@ -70,8 +71,16 @@ def sign_up():
                 current_race=current_race,
             )
             db.session.add(new_user)
+
+            races.to_sql(
+                name="current_races_F1", con=db.engine, index=False, if_exists="replace"
+            )
+
             df.to_sql(
-                name="current_data_F1", con=db.engine, index=False, if_exists="replace"
+                name="current_results_F1",
+                con=db.engine,
+                index=False,
+                if_exists="replace",
             )
             driver_info.to_sql(
                 name="driver_info_F1", con=db.engine, index=False, if_exists="replace"

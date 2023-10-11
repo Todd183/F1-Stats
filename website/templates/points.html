@@ -1,0 +1,120 @@
+{% extends 'base.html' %} {% block title %}Positions{% endblock %} {% block
+content %}
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  .container {
+    height: 600px;
+  }
+</style>
+<header>
+  <h1 align="center">
+    Culmulative Points of all drivers in
+    <strong>Season {{current_year|safe}}</strong>
+  </h1>
+</header>
+
+<div class="flex_row_nowrap">
+  <div id="f1_chart_point" class="container"></div>
+</div>
+
+<script>
+
+  var pointChartDom = document.getElementById("f1_chart_point");
+  var pointChart = echarts.init(pointChartDom);
+
+  const myRawData = {{plotdata|safe}}
+
+  function drawPointChart(_rawData) {
+    let option;
+    const players = {{drivers|safe}};
+    const datasetWithFilters = [];
+    const seriesList = [];
+    const legendList = [];
+    echarts.util.each(players, function (player) {
+      var datasetId = "dataset_" + player;
+      datasetWithFilters.push({
+        id: datasetId,
+        fromDatasetId: "dataset_raw",
+        transform: {
+          type: "filter",
+          config: { dimension: "driverCode", "=": player },
+        },
+      });
+      legendList.push({
+        name: player,
+      });
+
+      seriesList.push({
+        type: "line",
+        datasetId: datasetId,
+        showSymbol: false,
+        name: player,
+        endLabel: {
+          show: true,
+          formatter: function (params) {
+            return params.value[1] + ": " + params.value[2];
+          },
+        },
+        labelLayout: {
+          moveOverlap: "shiftY",
+        },
+        emphasis: {
+          focus: "series",
+        },
+        encode: {
+          x: "race",
+          y: "points",
+          tooltip: ["points"],
+        },
+      });
+    });
+    option = {
+      animationDuration: 10000,
+
+      dataset: [
+        {
+          id: "dataset_raw",
+          source: myRawData,
+        },
+        ...datasetWithFilters,
+      ],
+      title: {
+        //text: "F1 points xxxxxx",
+        left: "center",
+      },
+      tooltip: {
+        order: "valueDesc",
+        trigger: "axis",
+        position: function (point, params, dom, rect, size) {
+          // fixed at top
+          return [point[0] + 30, "10%"];
+        },
+      },
+      xAxis: {
+        type: "category",
+        nameLocation: "middle",
+        name: "Race",
+        nameLocation: "center",
+        nameGap: 30,
+      },
+      yAxis: {
+        name: "Points",
+        nameLocation: "center",
+        nameGap: 40,
+      },
+      grid: {
+        right: 140,
+      },
+      series: seriesList,
+    };
+    pointChart.setOption(option);
+  }
+
+
+  setTimeout(function () {
+    drawPointChart(myRawData);
+  }, 10);
+</script>
