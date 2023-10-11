@@ -1,9 +1,7 @@
 from flask import Blueprint, render_template, request, flash, jsonify
 from flask_login import login_required, current_user
-from .models import Note, Transaction, User
+from .models import User
 from website import db
-import json
-from PIL import Image
 from .get_F1_data import (
     getPlotData,
     get_complete_driver_info,
@@ -49,6 +47,7 @@ def home():
 
     favorite_drivers = team_to_driver[current_user.constructor]
 
+    current_year = datetime.datetime.now().date().year
     return render_template(
         "home.html",
         user=current_user,
@@ -59,6 +58,7 @@ def home():
         profiles=profiles,
         is_season_finished=is_season_finished,
         next_race=next_race,
+        current_year=current_year,
     )
 
 

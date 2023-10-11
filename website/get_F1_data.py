@@ -42,19 +42,19 @@ def get_schedule():
 
 def get_current_season_completed_race():
     """get number of races completed for current season"""
-    is_current = False
+    # is_current = False
     # current_drivers_standings = y.get_drivers_standings(year=YEAR)
     # race = 0
 
     all_drivers_standings = []
     current_date = pd.to_datetime(datetime.datetime.now().date())
-    schedule = get_schedule()
-    races = sum((schedule["Date"] < current_date).to_list())
-    for race in range(
-        0,
-        races,
+    races = get_races()
+    rounds = sum((pd.to_datetime(races["date"]) < current_date).to_list())
+    for round in range(
+        1,
+        rounds + 1,
     ):
-        drivers_standings_single_race = y.get_drivers_standings(year=YEAR, race=race)
+        drivers_standings_single_race = y.get_drivers_standings(year=YEAR, race=round)
         drivers_standings_single_race_df = pd.DataFrame(
             [
                 driver_standing.to_flat_dict()
@@ -63,23 +63,11 @@ def get_current_season_completed_race():
         )
         all_drivers_standings.append(drivers_standings_single_race_df)
 
-    # while not is_current:
-    #     race += 1
-    #     drivers_standings_single_race = y.get_drivers_standings(year=YEAR, race=race)
-    #     drivers_standings_single_race_df = pd.DataFrame(
-    #         [
-    #             driver_standing.to_flat_dict()
-    #             for driver_standing in drivers_standings_single_race
-    #         ]
-    #     )
-    #     all_drivers_standings.append(drivers_standings_single_race_df)
-    #     is_current = drivers_standings_single_race == current_drivers_standings
-
     all_drivers_standings_df = pd.concat(
         [df.assign(race=i + 1) for i, df in enumerate(all_drivers_standings)],
         ignore_index=True,
     )
-    return (race, all_drivers_standings_df)
+    return (rounds, all_drivers_standings_df)
 
 
 def clean_df(all_drivers_standings_df):

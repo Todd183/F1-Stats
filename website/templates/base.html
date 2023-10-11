@@ -53,16 +53,14 @@
         <div class="navbar-nav">
           {% if user.is_authenticated %}
           <a class="nav-item nav-link" id="home" href="/">Home</a>
-          <a class="nav-item nav-link" id="logout" href="/logout">Logout</a>
+
           <a class="nav-item nav-link" id="positions" href="/positions"
             >Positions</a
           >
           <a class="nav-item nav-link" id="add_transaction" href="/points"
             >Points</a
           >
-          <a class="nav-item nav-link" id="scan_receipt" href="/scan_receipt"
-            >Scan Receipt</a
-          >
+          <a class="nav-item nav-link" id="logout" href="/logout">Logout</a>
           {% else %}
           <a class="nav-item nav-link" id="login" href="/login">Login</a>
           <a class="nav-item nav-link" id="signUp" href="/sign-up">Sign Up</a>
