@@ -4,20 +4,39 @@ import numpy as np
 import datetime
 import re
 import requests
+import json
 
 YEAR = datetime.datetime.now().year
 y = yukinator.Yuki()
 
 
+def get_schedule():
+    """get shedule"""
+    json_file_path = "./website/static/data/schedule.json"
+    with open(json_file_path, "r") as json_file:
+        data = json.load(json_file)
+    schedule = pd.DataFrame(data)
+    schedule["Date"] = schedule["Date"].apply(
+        lambda x: datetime.datetime.strptime(x, "%B %d %Y").strftime("%Y-%m-%d")
+    )
+    schedule["Date"] = pd.to_datetime(schedule["Date"])
+    return schedule
+
+
 def get_current_season_completed_race():
     """get number of races completed for current season"""
     is_current = False
-    current_drivers_standings = y.get_drivers_standings(year=YEAR)
-    race = 0
-    all_drivers_standings = []
+    # current_drivers_standings = y.get_drivers_standings(year=YEAR)
+    # race = 0
 
-    while not is_current:
-        race += 1
+    all_drivers_standings = []
+    current_date = pd.to_datetime(datetime.datetime.now().date())
+    schedule = get_schedule()
+    races = sum((schedule["Date"] < current_date).to_list())
+    for race in range(
+        0,
+        races,
+    ):
         drivers_standings_single_race = y.get_drivers_standings(year=YEAR, race=race)
         drivers_standings_single_race_df = pd.DataFrame(
             [
@@ -26,7 +45,18 @@ def get_current_season_completed_race():
             ]
         )
         all_drivers_standings.append(drivers_standings_single_race_df)
-        is_current = drivers_standings_single_race == current_drivers_standings
+
+    # while not is_current:
+    #     race += 1
+    #     drivers_standings_single_race = y.get_drivers_standings(year=YEAR, race=race)
+    #     drivers_standings_single_race_df = pd.DataFrame(
+    #         [
+    #             driver_standing.to_flat_dict()
+    #             for driver_standing in drivers_standings_single_race
+    #         ]
+    #     )
+    #     all_drivers_standings.append(drivers_standings_single_race_df)
+    #     is_current = drivers_standings_single_race == current_drivers_standings
 
     all_drivers_standings_df = pd.concat(
         [df.assign(race=i + 1) for i, df in enumerate(all_drivers_standings)],
@@ -211,3 +241,19 @@ def get_profile(drivers):
             if key2 not in profile_items:
                 profile[key1][key2] = value2
     return profile
+
+
+def check_uptodate(df, db):
+    """check uptodate"""
+    schedule = get_schedule()
+    current_date = pd.to_datetime(datetime.datetime.now().date())
+    # races = sum((schedule["Date"] < current_date).to_list())
+    races = 20
+
+    # check whether data is up-to-date
+    if df["race"].max() + 1 < races:
+        current_race, df = getdata()
+        df.to_sql(
+            name="current_data_F1", con=db.engine, index=False, if_exists="replace"
+        )
+        db.session.commit()

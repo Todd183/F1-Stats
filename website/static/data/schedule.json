@@ -1,0 +1,45 @@
+[
+  { "Date": "March 5 2023", "Grand Prix": "Bahrain", "Venue": "Sakhir" },
+  { "Date": "March 19 2023", "Grand Prix": "Saudi Arabia", "Venue": "Jeddah" },
+  { "Date": "April 2 2023", "Grand Prix": "Australia", "Venue": "Melbourne" },
+  { "Date": "April 30 2023", "Grand Prix": "Azerbaijan", "Venue": "Baku" },
+  { "Date": "May 7 2023", "Grand Prix": "Miami", "Venue": "Miami" },
+  { "Date": "May 21 2023", "Grand Prix": "Emilia Romagna", "Venue": "Imola" },
+  { "Date": "May 28 2023", "Grand Prix": "Monaco", "Venue": "Monaco" },
+  { "Date": "June 4 2023", "Grand Prix": "Spain", "Venue": "Barcelona" },
+  { "Date": "June 18 2023", "Grand Prix": "Canada", "Venue": "Montreal" },
+  { "Date": "July 2 2023", "Grand Prix": "Austria", "Venue": "Spielberg" },
+  {
+    "Date": "July 9 2023",
+    "Grand Prix": "United Kingdom",
+    "Venue": "Silverstone"
+  },
+  { "Date": "July 23 2023", "Grand Prix": "Hungary", "Venue": "Budapest" },
+  { "Date": "July 30 2023", "Grand Prix": "Belgium", "Venue": "Spa" },
+  {
+    "Date": "August 27 2023",
+    "Grand Prix": "Netherlands",
+    "Venue": "Zandvoort"
+  },
+  { "Date": "September 3 2023", "Grand Prix": "Italy", "Venue": "Monza" },
+  {
+    "Date": "September 17 2023",
+    "Grand Prix": "Singapore",
+    "Venue": "Singapore"
+  },
+  { "Date": "September 24 2023", "Grand Prix": "Japan", "Venue": "Suzuka" },
+  { "Date": "October 8 2023", "Grand Prix": "Qatar", "Venue": "Lusail" },
+  { "Date": "October 22 2023", "Grand Prix": "USA", "Venue": "Austin" },
+  { "Date": "October 29 2023", "Grand Prix": "Mexico", "Venue": "Mexico City" },
+  { "Date": "November 5 2023", "Grand Prix": "Brazil", "Venue": "Sao Paulo" },
+  {
+    "Date": "November 18 2023",
+    "Grand Prix": "Las Vegas",
+    "Venue": "Las Vegas*"
+  },
+  {
+    "Date": "November 26 2023",
+    "Grand Prix": "Abu Dhabi",
+    "Venue": "Yas Marina"
+  }
+]

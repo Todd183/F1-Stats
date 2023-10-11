@@ -9,11 +9,12 @@ from .get_F1_data import (
     get_complete_driver_info,
     get_team_to_driver,
     get_profile,
+    check_uptodate,
 )
 
-# import pytesseract
-# import re
+import datetime
 import pandas as pd
+
 
 views = Blueprint("views", __name__)
 
@@ -23,6 +24,20 @@ views = Blueprint("views", __name__)
 def home():
     df_sql_query = "SELECT * FROM current_data_F1"
     df = pd.read_sql_query(df_sql_query, db.engine)
+
+    # # check whether data is up-to-date
+    check_uptodate(df, db)
+    # schedule = get_schedule()
+    # current_date = pd.to_datetime(datetime.datetime.now().date())
+    # races = sum((schedule["Date"] < current_date).to_list())
+
+    # if df["race"].max() + 1 < races:
+    #     current_race, df = getdata()
+    #     df.to_sql(
+    #         name="current_data_F1", con=db.engine, index=False, if_exists="replace"
+    #     )
+    #     db.session.commit()
+
     plotdata = getPlotData(df)
     team_to_driver = get_team_to_driver(df)
 
