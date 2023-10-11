@@ -108,3 +108,21 @@ def positions():
         current_year=current_year,
         drivers=drivers,
     )
+
+
+@views.route("/points", methods=["GET", "POST"])
+@login_required
+def points():
+    df_sql_query = "SELECT * FROM current_results_F1"
+    df = pd.read_sql_query(df_sql_query, db.engine)
+    current_year = datetime.datetime.now().date().year
+
+    plotdata = getPlotData(df)
+    drivers = list(set([i[1] for i in plotdata[1:]]))
+    return render_template(
+        "points.html",
+        user=current_user,
+        plotdata=plotdata,
+        current_year=current_year,
+        drivers=drivers,
+    )
