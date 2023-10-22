@@ -1,10 +1,10 @@
-Flask==3.0.0
+Flask==2.3.3
 Flask_Login==0.6.2
 flask_sqlalchemy==3.1.1
 numpy==1.24.2
-pandas==2.1.1
+pandas==2.1.0
 pytz==2023.3.post1
 Requests==2.31.0
 SQLAlchemy==2.0.20
-Werkzeug==3.0.0
+Werkzeug==2.3.7
 yukinator==0.1.2

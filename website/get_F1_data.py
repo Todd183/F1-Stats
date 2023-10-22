@@ -27,17 +27,17 @@ def get_races():
     return races
 
 
-def get_schedule():
-    """get shedule"""
-    json_file_path = "./website/static/data/schedule.json"
-    with open(json_file_path, "r") as json_file:
-        data = json.load(json_file)
-    schedule = pd.DataFrame(data)
-    schedule["Date"] = schedule["Date"].apply(
-        lambda x: datetime.datetime.strptime(x, "%B %d %Y").strftime("%Y-%m-%d")
-    )
-    schedule["Date"] = pd.to_datetime(schedule["Date"])
-    return schedule
+# def get_schedule():
+#     """get shedule"""
+#     json_file_path = "./website/static/data/schedule.json"
+#     with open(json_file_path, "r") as json_file:
+#         data = json.load(json_file)
+#     schedule = pd.DataFrame(data)
+#     schedule["Date"] = schedule["Date"].apply(
+#         lambda x: datetime.datetime.strptime(x, "%B %d %Y").strftime("%Y-%m-%d")
+#     )
+#     schedule["Date"] = pd.to_datetime(schedule["Date"])
+#     return schedule
 
 
 def get_current_season_completed_race():
