@@ -9,6 +9,7 @@ from .get_F1_data import (
     get_profile,
     is_uptodate,
     get_next_race,
+    getdata,
 )
 
 import datetime
@@ -21,13 +22,16 @@ views = Blueprint("views", __name__)
 @views.route("/", methods=["GET", "POST"])
 @login_required
 def home():
+    """get and pass data to frontend before loading home page"""
+
     df_sql_query = "SELECT * FROM current_results_F1"
     df = pd.read_sql_query(df_sql_query, db.engine)
 
     races_sql_query = "SELECT * FROM current_races_F1"
     races = pd.read_sql_query(races_sql_query, db.engine)
 
-    # # check whether data is up-to-date
+    # check whether data is up-to-date before loading home page
+    # If database is not up to date then update database first
     if not is_uptodate(df, races):
         current_race, df = getdata()
         df.to_sql(
@@ -62,39 +66,11 @@ def home():
     )
 
 
-# @views.route("/scan_receipt", methods=["GET", "POST"])
-# @login_required
-# def scan_receipt():
-#     if request.method == "POST":
-#         uploaded_file = request.files["image"]
-#         if uploaded_file.filename != "":
-#             try:
-#                 # Read the uploaded file as a stream
-#                 file_stream = uploaded_file.read()
-#                 # Create a BytesIO object and load the image from the stream
-#                 image = Image.open(BytesIO(file_stream))
-#                 # Perform OCR using pytesseract
-#                 raw_text = pytesseract.image_to_string(image)
-#                 # Regular expression to extract item names and prices (simplified example)
-#                 pattern = (
-#                     r"(\w+)\s+\$(\d+\.\d{2})"  # Assumes item name, space, price format
-#                 )
-#                 # Extract item names and prices using regex
-#                 matches = re.findall(pattern, raw_text)
-#                 # Create a list of dictionaries with item names and prices
-#                 items = [
-#                     {"name": match[0], "price": float(match[1])} for match in matches
-#                 ]
-#                 return text
-#             except Exception as e:
-#                 return str(e)
-
-#     return render_template("scan_receipt.html", user=current_user)
-
-
 @views.route("/positions", methods=["GET", "POST"])
 @login_required
 def positions():
+    """get and pass data to frontend before loading positions page"""
+
     df_sql_query = "SELECT * FROM current_results_F1"
     df = pd.read_sql_query(df_sql_query, db.engine)
     current_year = datetime.datetime.now().date().year
@@ -113,6 +89,8 @@ def positions():
 @views.route("/points", methods=["GET", "POST"])
 @login_required
 def points():
+    """get and pass data to frontend before loading points page"""
+
     df_sql_query = "SELECT * FROM current_results_F1"
     df = pd.read_sql_query(df_sql_query, db.engine)
     current_year = datetime.datetime.now().date().year

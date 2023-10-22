@@ -11,10 +11,12 @@ auth = Blueprint("auth", __name__)
 
 @auth.route("/login", methods=["GET", "POST"])
 def login():
+    """define login in page"""
     if request.method == "POST":
         email = request.form.get("email")
         password = request.form.get("password")
 
+        # handle unsuccessful login
         user = User.query.filter_by(email=email).first()
         if user:
             if check_password_hash(user.password, password):
@@ -32,12 +34,15 @@ def login():
 @auth.route("/logout")
 @login_required
 def logout():
+    """redirect to login page after logout"""
     logout_user()
     return redirect(url_for("auth.login"))
 
 
 @auth.route("/sign-up", methods=["GET", "POST"])
 def sign_up():
+    """define sign up page"""
+
     if request.method == "POST":
         email = request.form.get("email")
         usr_name = request.form.get("usr_name")

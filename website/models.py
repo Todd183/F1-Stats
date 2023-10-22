@@ -8,7 +8,5 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(150), unique=True)
     password = db.Column(db.String(150))
     usr_name = db.Column(db.String(150))
-    # notes = db.relationship("Note")  # capital here !!
-    # transaction = db.relationship("Transaction")
     constructor = db.Column(db.String(150))
     current_race = db.Column(db.Integer)

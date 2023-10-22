@@ -250,7 +250,6 @@ def get_profile(drivers):
 
 def is_uptodate(df, races):
     """check uptodate"""
-    # schedule = get_schedule()
     current_date = pd.to_datetime(datetime.datetime.now().date())
     num_of_races = sum((pd.to_datetime(races["nz_date"]) < current_date).to_list())
     return df["race"].max() + 1 >= num_of_races
