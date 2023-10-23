@@ -48,7 +48,7 @@ Upon logging in, the website will redirect you to the home page, where you can v
 
 In the navigation bar, you can click "Points" to view dynamic points trends for all drivers or click "Positions" to view dynamic positions trends for all drivers.
 
-## 8. Project file structure
+## 8. Project folder structure
 
 ```bash
 .
