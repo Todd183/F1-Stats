@@ -1,6 +1,45 @@
 # F1-Stats
 A F1 statistics website built with python Flask. 
 
+# Project folder structure
+
+```bash
+.
+├── README.md #git hub Readme file
+├── main.py # main python file to excute
+├── requirements.txt # python libraries dependencies records
+└── website
+    ├── __init__.py # initiate the website after runing main.py
+    ├── auth.py # backend codes for login, log out and sign up page
+    ├── get_F1_data.py # define customized functions that get and process F1 data
+    ├── models.py # define data class for database
+    ├── static
+    │   ├── data
+    │   │   └── schedule.json #race schedule data
+    │   ├── index.js
+    │   └── team_logo #team pictures file
+    │       ├── Alfa Romeo.png
+    │       ├── AlphaTauri.png
+    │       ├── Alpine F1 Team.png
+    │       ├── Aston Martin.png
+    │       ├── Ferrari.png
+    │       ├── Haas F1 Team.png
+    │       ├── McLaren.png
+    │       ├── Mercedes.png
+    │       ├── Red Bull.png
+    │       └── Williams.png
+    ├── templates
+    │   ├── base.html #base template html file
+    │   ├── home.html #home page
+    │   ├── login.html #login page
+    │   ├── logout.html #logout page
+    │   ├── points.html #points page
+    │   ├── positions.html #positions page
+    │   └── sign_up.html #sign up page
+    └── views.py # backend codes for home, points, and positions page
+```
+
+
 # User Guide
 
 ## 1. Setting Up the Environment
@@ -47,3 +86,4 @@ Upon logging in, the website will redirect you to the home page, where you can v
 ## 7. Navigation Bar Options
 
 In the navigation bar, you can click "Points" to view dynamic points trends for all drivers or click "Positions" to view dynamic positions trends for all drivers.
+
