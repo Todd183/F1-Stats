@@ -47,7 +47,9 @@ def get_current_season_completed_race():
     # race = 0
 
     all_drivers_standings = []
-    current_date = pd.to_datetime(datetime.datetime.now().date())
+    current_date = pd.to_datetime(datetime.datetime.now().date()) - datetime.timedelta(
+        days=1
+    )
     races = get_races()
     rounds = sum((pd.to_datetime(races["date"]) < current_date).to_list())
     for round in range(
